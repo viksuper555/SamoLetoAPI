@@ -1,3 +1,7 @@
+using Microsoft.Extensions.DependencyInjection;
+using SamoLetoAPI.Services.Background;
+using SamoLetoAPI.Singleton;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<ISharedDictionary, SharedDictionary>();
+
+builder.Services.AddHostedService(
+            container => new TicketBuyerWorker(
+                container.GetRequiredService<ILogger<TicketBuyerWorker>>(),
+                container.GetRequiredService<ISharedDictionary>()
+            ));
 
 var app = builder.Build();
 
