@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SamoLetoAPI.DTO;
+using SamoLetoAPI.Services;
 using SamoLetoAPI.Singleton;
 
 namespace SamoLetoAPI.Controllers
@@ -8,22 +9,17 @@ namespace SamoLetoAPI.Controllers
     [Route("[controller]")]
     public class TicketController : ControllerBase
     {
-    
-        private readonly ILogger<TicketController> _logger;
-        private readonly ISharedDictionary _sharedDictionary;
+        private readonly IReservingTicketsService _reservingTicketsService;
 
-        public TicketController(ILogger<TicketController> logger, ISharedDictionary sharedDictionary) 
+        public TicketController(IReservingTicketsService reservingTicketsService) 
         { 
-            _logger = logger;
-            _sharedDictionary = sharedDictionary;
+            _reservingTicketsService = reservingTicketsService;
         }
 
         [HttpPost("Buy")]
-        public async Task<BaseResponseDTO> BuyTicket()
+        public async Task<BaseResponseDTO> BuyTicket(string flightNumber)
         {
-            _sharedDictionary.AvailableTickets.TryAdd("","aaa");
-
-            return new(ErrorCode.OK);
+            return await _reservingTicketsService.ReserveSeat(flightNumber);
         }
     }
 }

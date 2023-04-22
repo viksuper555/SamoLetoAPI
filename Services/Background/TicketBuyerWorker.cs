@@ -5,13 +5,13 @@ namespace SamoLetoAPI.Services.Background
     public class TicketBuyerWorker : BackgroundService
     {
         private readonly ILogger<TicketBuyerWorker> _logger;
-        private readonly ISharedDictionary _sharedDictionary;
+        private readonly IReservingTicketsService _reservingTicketsService;
 
-
-        public TicketBuyerWorker(ILogger<TicketBuyerWorker> logger, ISharedDictionary sharedDictionary)
+        private static string flightNumber = "Flight 77";
+        public TicketBuyerWorker(ILogger<TicketBuyerWorker> logger, IReservingTicketsService reservingTicketsService)
         {
             _logger = logger;
-            _sharedDictionary = sharedDictionary;
+            _reservingTicketsService = reservingTicketsService;
         }
 
         protected async override Task ExecuteAsync(CancellationToken ct)
@@ -22,7 +22,7 @@ namespace SamoLetoAPI.Services.Background
 
                 try
                 {
-                    var value = _sharedDictionary.AvailableTickets.ContainsKey("");
+                    await _reservingTicketsService.ReserveSeat(flightNumber);
 
                 }
                 catch (Exception ex)

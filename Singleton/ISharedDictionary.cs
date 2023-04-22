@@ -1,9 +1,10 @@
-﻿using System.Collections.Concurrent;
+﻿using SamoLetoAPI.DTO;
+using System.Collections.Concurrent;
 
 namespace SamoLetoAPI.Singleton
 {
     public interface ISharedDictionary
     {
-        ConcurrentDictionary<string, string> AvailableTickets { get; }
+        public Task<BaseResponseDTO> ReserveSeat(string flightNumber);
     }
 }

@@ -5,6 +5,7 @@
     {
         OK = 0,
         DefaultError = -1,
+        NoTicketsAvailable = -1000
     }
 
     public static class ErrorCodes
@@ -13,6 +14,8 @@
         {
             [(int)ErrorCode.OK] = "OK",
             [(int)ErrorCode.DefaultError] = "ERROR: INTERNAL EXCEPTION",
+            [(int)ErrorCode.NoTicketsAvailable] = "ERROR: NO TICKETS AVAILABLE",
+
         };
     }
 

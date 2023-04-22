@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using SamoLetoAPI.Services;
 using SamoLetoAPI.Services.Background;
 using SamoLetoAPI.Singleton;
 
@@ -12,11 +13,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<ISharedDictionary, SharedDictionary>();
+builder.Services.AddSingleton<IReservingTicketsService, ReservingTicketsService>();
 
 builder.Services.AddHostedService(
             container => new TicketBuyerWorker(
                 container.GetRequiredService<ILogger<TicketBuyerWorker>>(),
-                container.GetRequiredService<ISharedDictionary>()
+                container.GetRequiredService<IReservingTicketsService>()
             ));
 
 var app = builder.Build();
