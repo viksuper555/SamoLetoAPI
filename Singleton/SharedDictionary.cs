@@ -5,7 +5,12 @@ namespace SamoLetoAPI.Singleton
 {
     public class SharedDictionary : ISharedDictionary
     {
-        private SemaphoreSlim semaphore = new SemaphoreSlim(1);
+        private ConcurrentDictionary<string, SemaphoreSlim> flightsemaphores = new ConcurrentDictionary<string, SemaphoreSlim>
+        {
+            ["Flight 77"] = new SemaphoreSlim(1),
+            ["Flight 11"] = new SemaphoreSlim(1),
+            ["Flight 175"] = new SemaphoreSlim(1)
+        };
         private static readonly ConcurrentDictionary<string, int> flightTicketsDict = new ConcurrentDictionary<string, int>
         {
             ["Flight 77"] = 58,
@@ -19,24 +24,29 @@ namespace SamoLetoAPI.Singleton
         {
             try
             {
-                semaphore.Wait();
-                int availableTickets;
-                if (flightTicketsDict.TryGetValue(flightNumber, out availableTickets) && availableTickets > 0)
+
+                SemaphoreSlim semaphore = null;
+                if (flightsemaphores.TryGetValue(flightNumber, out semaphore ) && semaphore != null) 
                 {
-                    flightTicketsDict[flightNumber]--;
-                    return new(ErrorCode.OK);
+                    semaphore.Wait();
+                    int availableTickets;
+                    if (flightTicketsDict.TryGetValue(flightNumber, out availableTickets) && availableTickets > 0)
+                    {
+                        flightTicketsDict[flightNumber]--;
+                        semaphore.Wait(5000);
+                        semaphore.Release();
+                        return new(ErrorCode.OK);
+                    }
+                    semaphore.Release();
+                    return new(ErrorCode.NoTicketsAvailable);
                 }
-                return new(ErrorCode.NoTicketsAvailable);
             }
             catch (Exception ex)
             {
-                return new(ErrorCode.DefaultError);
+
             }
-            finally 
-            { 
-                semaphore.Release(); 
-            }
-            
+            return new(ErrorCode.DefaultError);
+
         }
     }
 }
