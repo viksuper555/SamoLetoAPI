@@ -32,13 +32,11 @@ namespace SamoLetoAPI.Data
                     if (flightTicketsDict.TryGetValue(flightNumber, out availableTickets) && availableTickets > 0)
                     {
                         flightTicketsDict[flightNumber]--;
-                        semaphore.Wait(5000);
                     }
                     else
                     {
                         errorCode = ErrorCode.NoTicketsAvailable;
                     }
-                    semaphore.Release();
                 }
             }
             catch (Exception)
@@ -63,7 +61,6 @@ namespace SamoLetoAPI.Data
                 {
                     semaphore.Wait();
                     await Task.Delay(duration);
-                    semaphore.Release();
                 }
                 catch (Exception)
                 {
