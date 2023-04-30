@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using SamoLetoAPI.Data;
 using SamoLetoAPI.Services;
 using SamoLetoAPI.Services.Background;
-using SamoLetoAPI.Singleton;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ISharedDictionary, SharedDictionary>();
+builder.Services.AddSingleton<IFlightResources, FlightResources>();
 builder.Services.AddSingleton<IReservingTicketsService, ReservingTicketsService>();
 
 builder.Services.AddHostedService(
