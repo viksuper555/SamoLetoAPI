@@ -21,5 +21,12 @@ namespace SamoLetoAPI.Controllers
         {
             return await _reservingTicketsService.ReserveSeat(flightNumber);
         }
+
+
+        [HttpGet("Lock")]
+        public async Task<BaseResponseDTO> Lock(string flightNumber, int durationSeconds)
+        {
+            return await _reservingTicketsService.Lock(flightNumber, TimeSpan.FromSeconds(durationSeconds));
+        }
     }
 }
